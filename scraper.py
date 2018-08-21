@@ -1,19 +1,22 @@
 from bs4 import BeautifulSoup
 import json
+import datetime
 import sys
 import os
 
 # Outputs the primary weather data from a local weewx page to a JSON file
+time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 try:
      fileInput = open(sys.argv[1], "r")
 except IndexError:
-     sys.exit("Error: file input target path not given.\n Usage: python " + __file__ + " fileInput fileOutput")
+     sys.exit("[" + time + "] Error: file input target path not given.\n[" + time + "] Usage: python " + __file__ + " fileInput fileOutput")
 
 try:
      fileResultString = sys.argv[2]
 except IndexError:
-     sys.exit("Error: file output target path not given.")
+    
+     sys.exit("[" + time + "] Error: file output target path not given.\n[" + time + "] Usage: python " + __file__ + " fileInput fileOutput")
 
 soup = BeautifulSoup(fileInput, 'html.parser')
 
@@ -53,10 +56,11 @@ weatherData["latitude"]               = locationData[0].get_text()
 weatherData["longitude"]              = locationData[1].get_text()
 weatherData["altitude"]               = locationData[2].get_text()
 
+
 try:
     with open(fileResultString, 'w') as fp:
         json.dump(weatherData, fp)
 except Exception:
-    sys.exit("Error opening output file.")
+    sys.exit("[" + time + "] Error opening output file.")
 
-print "Successfully scraped data from %s and output to" % sys.argv[1], sys.argv[2] + "."
+print "[" + time + "] Successfully scraped data from %s and output to" % sys.argv[1], sys.argv[2] + "."
