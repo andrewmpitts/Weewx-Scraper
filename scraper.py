@@ -22,6 +22,7 @@ soup = BeautifulSoup(fileInput, 'html.parser')
 
 weatherData = {}
 
+mastheadData = soup.select("#masthead");
 mainData = soup.select("#stats_group > div table .stats_data")
 superlativeData = soup.select("table")[1].select(".stats_data")
 locationData = soup.select("table")[2].select(".data")
@@ -55,7 +56,9 @@ weatherData["vectorAverageDirection"] = superlativeData[10].get_text().splitline
 weatherData["latitude"]               = locationData[0].get_text()
 weatherData["longitude"]              = locationData[1].get_text()
 weatherData["altitude"]               = locationData[2].get_text()
-
+weatherData['townName']               = mastheadData[0].select('h1')[0].get_text()
+weatherData['dateUpdated']            = mastheadData[0].select('h2')[1].get_text().split()[0]
+weatherData['timeUpdated']            = mastheadData[0].select('h2')[1].get_text().split()[1]
 
 try:
     with open(fileResultString, 'w') as fp:
